@@ -1,11 +1,11 @@
 const fruitForm = document.querySelector("#inputSection form");
-//creates object that selects the form input section
-
 const fruitList = document.querySelector('#fruitSection ul')
-//creates object that selects the list elements under the fruitSection 
-
 const fruitNutrition = document.querySelector('#nutritionSection p');
-//selects
+
+const APIkey = "33986191-6404d03a8a54cd47780364f86"
+
+let calorieCount = 0;
+let action;
 
 fruitForm.addEventListener("submit", extractFruit);
 //applies function on submit click
@@ -27,41 +27,49 @@ function extractFruit(e) {
 }
 
 function addFruit(fruit) {
-    
-
     const li = document.createElement('li');
     //creates list item
 
     li.textContent = fruit['name'];
     //assigns text (fruit) to list item
 
-    li.addEventListener('click', removeFruit, {once: true});
-    //applies event listener that only runs once
+    li.addEventListener('click', (e) => {
+        removeFruit(e),  calculateNutrition(fruit, "remove")
+    }, {once: true});
+    //applies event listener that only runs once and removes fruit and calorie count
 
     fruitList.appendChild(li);
     //appends list item to the HTML list  
-    
-    calculateNutrition(fruit);
+
+    calculateNutrition(fruit, "add");
     //runs function for each fruit added
 }
 
 function removeFruit(e) {
+    //calorieCount = calorieCount - e.target.nutrition;
+    // calculateNutrition(e.target);
     e.target.remove();
     //removes the item that is clicked on
+
+    
 }
 
-let calorieCount = 0;
-
-function calculateNutrition(fruitData) {
+function calculateNutrition(fruitData, action) {
     let nutrition = fruitData['nutritions']['calories'];
     //takes the calories value from the nutrition key value
+    
+    if(action === "add") {
+        calorieCount += nutrition;
+    } else if (action === "remove") {
+        calorieCount -= nutrition;
+    }
+    //increment/decrement calorie count according to action 
 
-    calorieCount += nutrition
-    //add nutrition value of new item to calorie count
-
-    document.querySelector('p').innerHTML = `Calorie count: ${calorieCount}`
+    fruitNutrition.innerHTML = `Calorie count: ${calorieCount}`
     //formats the text that is shown
 }
+
+
 
 
 
